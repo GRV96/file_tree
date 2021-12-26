@@ -95,7 +95,8 @@ if __name__ == "__main__":
 
 	file_records = explore_dir_tree(dir_path)
 
-	with output_path.open(mode="w") as output_stream:
+	with output_path.open(mode="w", encoding="utf-8") as output_stream:
+
 		for file_record in file_records:
 			output_stream.write(
 				"\t" * file_record.depth + file_record.file_name + "\n")
