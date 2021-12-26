@@ -90,16 +90,22 @@ def _make_parser():
 
 
 if __name__ == "__main__":
+	_NEW_LINE = "\n"
+	_TAB = "\t"
+
 	parser = _make_parser()
 	args = parser.parse_args()
 
 	dir_path = args.directory
+	dir_path = dir_path.resolve() # Conversion to an absolute path
+
 	output_path = args.output
 
 	file_records = explore_dir_tree(dir_path)
 
 	with output_path.open(mode="w", encoding="utf-8") as output_stream:
+		output_stream.write(str(dir_path) + _NEW_LINE)
 
-		for file_record in file_records:
+		for file_record in file_records[1:]:
 			output_stream.write(
-				"\t" * file_record.depth + file_record.file_name + "\n")
+				_TAB * file_record.depth + file_record.file_name + _NEW_LINE)
