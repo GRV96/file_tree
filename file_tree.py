@@ -1,3 +1,8 @@
+"""
+Writes a directory's file structure in a text file.
+"""
+
+
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -78,7 +83,7 @@ def _explore_dir_tree_rec(dir_path, file_recs, depth):
 
 
 def _make_parser():
-	parser = ArgumentParser()
+	parser = ArgumentParser(description=__doc__)
 
 	parser.add_argument("-d", "--directory", type=Path, default=None,
 		help="Path to the directory to explore")
