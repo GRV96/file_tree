@@ -3,8 +3,8 @@
 ## Français
 
 L'application File Tree écrit dans un fichier texte l'arborescence des fichiers
-contenus dans un dossier racine. L'indentation indique quels éléments sont
-inclus dans d'autres.
+contenus dans un dossier racine. Les niveaux d'indentation indiquent quels
+éléments sont inclus dans chaque dossier.
 
 Il faut lancer File Tree en ligne de commande avec les arguments suivants.
 
@@ -27,8 +27,8 @@ python file_tree.py -h
 ## English
 
 Application File Tree writes the tree structure of a root directory's files in
-a text file. The indentation indicates which elements are contained in other
-ones.
+a text file. The indentation levels indicate which elements are contained in
+each directory.
 
 File Tree must be executed in command line with the following arguments.
 
