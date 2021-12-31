@@ -9,7 +9,8 @@ inclus dans d'autres.
 Il faut lancer File Tree en ligne de commande avec les arguments suivants.
 
 * `-d`/`--directory`: le chemin du dossier à explorer
-* `-o`/`--output`: le chemin du fichier contenant l'arborescence écrite de `-d`
+* `-o`/`--output`: le chemin du fichier qui contiendra l'arborescence du
+dossier spécifié par `-d`
 
 Exemple:
 
@@ -31,8 +32,9 @@ ones.
 
 File Tree must be executed in command line with the following arguments.
 
-* `-d`/`--directory`: the path to the folder to explore
-* `-o`/`--output`: the path to the file meant to contain the written tree structure of `-d`
+* `-d`/`--directory`: the path to the directory to explore
+* `-o`/`--output`: the path to the file meant to contain the tree structure of
+the directory specified with `-d`
 
 Example:
 
