@@ -7,6 +7,11 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 
+_DIR_MARK = "[DIR] "
+_NEW_LINE = "\n"
+_TAB = "\t"
+
+
 class FileRecord:
 	"""
 	This class represents a file found in a directory tree structure.
@@ -82,6 +87,17 @@ def _explore_dir_tree_rec(dir_path, file_recs, depth):
 			file_recs.append(FileRecord(file, depth))
 
 
+def _file_record_to_str(file_record):
+	file_rec_str = _TAB * file_record.depth
+
+	if file_record.path.is_dir():
+		file_rec_str += _DIR_MARK
+
+	file_rec_str += file_record.path.name + _NEW_LINE
+
+	return file_rec_str
+
+
 def _make_parser():
 	parser = ArgumentParser(description=__doc__)
 
@@ -95,9 +111,6 @@ def _make_parser():
 
 
 if __name__ == "__main__":
-	_NEW_LINE = "\n"
-	_TAB = "\t"
-
 	parser = _make_parser()
 	args = parser.parse_args()
 
@@ -112,5 +125,4 @@ if __name__ == "__main__":
 		output_stream.write(str(dir_path) + _NEW_LINE)
 
 		for file_record in file_records[1:]:
-			output_stream.write(
-				_TAB * file_record.depth + file_record.path.name + _NEW_LINE)
+			output_stream.write(_file_record_to_str(file_record))
