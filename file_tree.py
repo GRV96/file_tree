@@ -12,16 +12,16 @@ class FileRecord:
 	This class represents a file found in a directory tree structure.
 	"""
 
-	def __init__(self, file_name, depth):
+	def __init__(self, path, depth):
 		"""
-		The constructor needs the file's name, not its full path, and its depth
-		in the tree structure. The root's depth is 0.
+		The constructor needs the file's path and its depth in the tree
+		structure. The root's depth is 0.
 
 		Args:
-			file_name (str): the file's name
+			path (pathlib.Path): the file's path
 			depth (int): the file's depth in the directory tree structure
 		"""
-		self._file_name = file_name
+		self._path = path
 		self._depth = depth
 
 	@property
@@ -32,11 +32,11 @@ class FileRecord:
 		return self._depth
 
 	@property
-	def file_name(self):
+	def path(self):
 		"""
-		str: this file's name
+		pathlib.Path: this file's path
 		"""
-		return self._file_name
+		return self._path
 
 
 def explore_dir_tree(dir_path):
@@ -68,7 +68,7 @@ def _explore_dir_tree_rec(dir_path, file_recs, depth):
 		depth (int): the depth of dir_path in the directory tree. It should be
 			set to 0 on the initial call to this function.
 	"""
-	file_recs.append(FileRecord(dir_path.name, depth))
+	file_recs.append(FileRecord(dir_path, depth))
 	depth += 1
 
 	files = list(dir_path.glob("*"))
@@ -79,7 +79,7 @@ def _explore_dir_tree_rec(dir_path, file_recs, depth):
 			_explore_dir_tree_rec(file, file_recs, depth)
 
 		else:
-			file_recs.append(FileRecord(file.name, depth))
+			file_recs.append(FileRecord(file, depth))
 
 
 def _make_parser():
@@ -113,4 +113,4 @@ if __name__ == "__main__":
 
 		for file_record in file_records[1:]:
 			output_stream.write(
-				_TAB * file_record.depth + file_record.file_name + _NEW_LINE)
+				_TAB * file_record.depth + file_record.path.name + _NEW_LINE)
