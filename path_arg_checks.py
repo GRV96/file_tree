@@ -1,9 +1,9 @@
+from pathlib import Path
 from sys import exit
 
 from jazal import\
 	MissingPathArgWarner,\
-	make_altered_name,\
-	make_altered_path
+	make_altered_name
 
 
 _ERROR_INTRO = "ERROR! "
@@ -31,7 +31,7 @@ def check_output_path(arg_name, output_path, extension, dir_path):
 	missing_path_warner = MissingPathArgWarner(arg_name, extension)
 
 	if output_path is None:
-		output_path = make_altered_path(dir_path,
+		output_path = Path.cwd()/make_altered_name(dir_path,
 			after_stem=" file tree", extension=missing_path_warner.extension)
 
 	else:
