@@ -6,6 +6,10 @@ Writes a directory's file structure in a text file.
 from argparse import ArgumentParser
 from pathlib import Path
 
+from path_arg_checks import\
+	check_dir_path,\
+	check_output_path
+
 
 _DIR_MARK = "[DIR] "
 _NEW_LINE = "\n"
@@ -115,9 +119,12 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	dir_path = args.directory
+	check_dir_path("-d/--directory", dir_path)
 	dir_path = dir_path.resolve() # Conversion to an absolute path
 
 	output_path = args.output
+	output_path = check_output_path(
+		"-o/--output", output_path, ".txt", dir_path)
 
 	file_records = explore_dir_tree(dir_path)
 
