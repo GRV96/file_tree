@@ -37,7 +37,7 @@ def check_output_path(arg_name, output_path, extension, dir_path):
 	else:
 		path_checker =\
 			missing_path_warner.make_reactive_path_checker(output_path)
-		
+
 		if path_checker.path_is_dir():
 			output_path = output_path/make_altered_name(
 				dir_path, after_stem=" file tree",
