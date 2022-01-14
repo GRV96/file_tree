@@ -76,15 +76,19 @@ def _explore_dir_tree_rec(dir_path, file_recs, depth):
 	file_recs.append(FileRecord(dir_path, depth))
 	depth += 1
 
-	files = list(dir_path.glob("*"))
-	files.sort()
+	dir_content = list(dir_path.glob("*"))
+	dir_content.sort()
+	dirs = list()
 
-	for file in files:
+	for file in dir_content:
 		if file.is_dir():
-			_explore_dir_tree_rec(file, file_recs, depth)
+			dirs.append(file)
 
 		else:
 			file_recs.append(FileRecord(file, depth))
+
+	for dir in dirs:
+		_explore_dir_tree_rec(dir, file_recs, depth)
 
 
 def _file_record_to_str(file_record):
