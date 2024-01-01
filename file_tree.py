@@ -46,7 +46,7 @@ class FileRecord:
 		return self._path
 
 
-def explore_dir_tree(dir_path, include_empty_dirs, name_contains=None):
+def explore_dir_tree(dir_path, exclude_empty_dirs, name_contains=None):
 	"""
 	This function visits all ramifications of a directory tree structure and
 	represents it with a list of FileRecord objects. If argument name_contains
@@ -55,7 +55,7 @@ def explore_dir_tree(dir_path, include_empty_dirs, name_contains=None):
 
 	Args:
 		dir_path (pathlib.Path): the path to the root directory
-		include_empty_dirs (bool): If True, the tree will include empty
+		exclude_empty_dirs (bool): If True, the tree will exclude empty
 			directories.
 		name_contains (str): filters the files if it is not None or an empty
 			string. Defaults to None.
@@ -71,12 +71,12 @@ def explore_dir_tree(dir_path, include_empty_dirs, name_contains=None):
 
 	file_records = list()
 	_explore_dir_tree_rec(
-		dir_path, file_records, include_empty_dirs, name_filter, 0)
+		dir_path, file_records, exclude_empty_dirs, name_filter, 0)
 	return file_records
 
 
 def _explore_dir_tree_rec(
-		dir_path, file_recs, include_empty_dirs, name_filter, depth):
+		dir_path, file_recs, exclude_empty_dirs, name_filter, depth):
 	"""
 	This function called by explore_dir_tree recursively visits directories to
 	represent their tree structure with a list of FileRecord objects. Argument
@@ -89,7 +89,7 @@ def _explore_dir_tree_rec(
 		file_recs (list): The FileRecord objects generated throughout the
 			exploration are appended to this list. It should be empty on the
 			initial call to this function.
-		include_empty_dirs (bool): If True, the tree will include empty
+		exclude_empty_dirs (bool): If True, the tree will exclude empty
 			directories.
 		name_filter (function): the function that decides to include files in the
 			tree depending on their name
@@ -114,10 +114,10 @@ def _explore_dir_tree_rec(
 
 	for dir in dirs:
 		inclusions = _explore_dir_tree_rec(
-			dir, file_recs, include_empty_dirs, name_filter, depth)
+			dir, file_recs, exclude_empty_dirs, name_filter, depth)
 		nb_files_included += inclusions
 
-	if not include_empty_dirs and nb_files_included < 1:
+	if exclude_empty_dirs and nb_files_included < 1:
 		file_recs.pop()
 
 	return nb_files_included
@@ -163,11 +163,11 @@ if __name__ == "__main__":
 	dir_path = args.directory
 	dir_path = dir_path.resolve() # Conversion to an absolute path
 
-	include_empty_dirs = not args.exclude_empty
+	exclude_empty_dirs = args.exclude_empty
 
 	output_path = args.output
 
-	file_records = explore_dir_tree(dir_path, include_empty_dirs, contains)
+	file_records = explore_dir_tree(dir_path, exclude_empty_dirs, contains)
 
 	with output_path.open(mode="w", encoding="utf-8") as output_stream:
 		output_stream.write(str(dir_path) + _NEW_LINE)
