@@ -7,7 +7,9 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 
+_ASTERISK = "*"
 _DIR_MARK = "[DIR] "
+_EMPTY_STR = ""
 _NEW_LINE = "\n"
 _TAB = "\t"
 
@@ -44,39 +46,51 @@ class FileRecord:
 		return self._path
 
 
-def explore_dir_tree(dir_path):
+def explore_dir_tree(dir_path, name_contains=None):
 	"""
 	This function visits all ramifications of a directory tree structure and
-	represents it with a list of FileRecord objects.
+	represents it with a list of FileRecord objects. If argument name_contains
+	is provided, only files whose name includes it will be considered.
 
 	Args:
 		dir_path (pathlib.Path): the path to the root directory
+		name_contains (str): ignored if None or an empty string. Defaults to
+			None.
 
 	Returns:
 		list: FileRecord objects that make a representation of the directory
 			tree structure
 	"""
+	if name_contains is None or name_contains == _EMPTY_STR:
+		name_filter = lambda name: True
+	else:
+		name_filter = lambda name: name_contains in name
+
 	file_records = list()
-	_explore_dir_tree_rec(dir_path, file_records, 0)
+	_explore_dir_tree_rec(dir_path, file_records, name_filter, 0)
 	return file_records
 
 
-def _explore_dir_tree_rec(dir_path, file_recs, depth):
+def _explore_dir_tree_rec(dir_path, file_recs, name_filter, depth):
 	"""
 	This function called by explore_dir_tree recursively visits directories to
-	represent their tree structure with a list of FileRecord objects.
+	represent their tree structure with a list of FileRecord objects. Function
+	name_filter takes each file's name as an argument and returns a Boolean. A
+	file is included in the tree if and only if name_filter returns True.
 
 	Args:
 		dir_path (pathlib.Path): the path to the root directory
 		file_recs (list): The FileRecord objects generated throughout the
 			exploration are appended to this list.
+		name_filter (function): the function that decides to include files in the
+			tree depending on their name
 		depth (int): the depth of dir_path in the directory tree. It should be
 			set to 0 on the initial call to this function.
 	"""
 	file_recs.append(FileRecord(dir_path, depth))
 	depth += 1
 
-	dir_content = list(dir_path.glob("*"))
+	dir_content = list(dir_path.glob(_ASTERISK))
 	dir_content.sort()
 	dirs = list()
 
@@ -84,11 +98,11 @@ def _explore_dir_tree_rec(dir_path, file_recs, depth):
 		if file.is_dir():
 			dirs.append(file)
 
-		else:
+		elif name_filter(file.name):
 			file_recs.append(FileRecord(file, depth))
 
 	for dir in dirs:
-		_explore_dir_tree_rec(dir, file_recs, depth)
+		_explore_dir_tree_rec(dir, file_recs, name_filter, depth)
 
 
 def _file_record_to_str(file_record):
@@ -105,6 +119,9 @@ def _file_record_to_str(file_record):
 def _make_parser():
 	parser = ArgumentParser(description=__doc__)
 
+	parser.add_argument("-c", "--contains", type=str, default=None,
+		help="Only include files whose name contains this argument.")
+
 	parser.add_argument("-d", "--directory", type=Path, default=None,
 		help="Path to the directory to explore")
 
@@ -118,12 +135,14 @@ if __name__ == "__main__":
 	parser = _make_parser()
 	args = parser.parse_args()
 
+	contains = args.contains
+
 	dir_path = args.directory
 	dir_path = dir_path.resolve() # Conversion to an absolute path
 
 	output_path = args.output
 
-	file_records = explore_dir_tree(dir_path)
+	file_records = explore_dir_tree(dir_path, contains)
 
 	with output_path.open(mode="w", encoding="utf-8") as output_stream:
 		output_stream.write(str(dir_path) + _NEW_LINE)
