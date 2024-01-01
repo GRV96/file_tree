@@ -140,13 +140,15 @@ def _make_parser():
 	parser.add_argument("-c", "--contains", type=str, default=None,
 		help="Only include files whose name contains this argument.")
 
-	parser.add_argument("-d", "--directory", type=Path, default=None,
+	parser.add_argument("-d", "--directory",
+		type=Path, default=None, required=True,
 		help="Path to the directory to explore")
 
 	parser.add_argument("-e", "--exclude-empty", action="store_true",
 		help="This flag excludes empty directories from the file tree.")
 
-	parser.add_argument("-o", "--output", type=Path, default=None,
+	parser.add_argument("-o", "--output",
+		type=Path, default=None, required=True,
 		help="Path to the text file that will contain the tree structure.")
 
 	return parser
