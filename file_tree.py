@@ -51,7 +51,7 @@ def explore_dir_tree(dir_path, include_empty_dirs, name_contains=None):
 	This function visits all ramifications of a directory tree structure and
 	represents it with a list of FileRecord objects. If argument name_contains
 	is provided, the directory tree will include only files whose name contains
-	the argument.
+	this argument.
 
 	Args:
 		dir_path (pathlib.Path): the path to the root directory
@@ -79,14 +79,16 @@ def _explore_dir_tree_rec(
 		dir_path, file_recs, include_empty_dirs, name_filter, depth):
 	"""
 	This function called by explore_dir_tree recursively visits directories to
-	represent their tree structure with a list of FileRecord objects. Function
-	name_filter takes each file's name as an argument and returns a Boolean. A
-	file is included in the tree if and only if name_filter returns True.
+	represent their tree structure with a list of FileRecord objects. Argument
+	name_filter is a function that takes each file's name as an argument and
+	returns a Boolean. A file is included in the tree if and only if
+	name_filter returns True.
 
 	Args:
 		dir_path (pathlib.Path): the path to a directory
 		file_recs (list): The FileRecord objects generated throughout the
-			exploration are appended to this list.
+			exploration are appended to this list. It should be empty on the
+			initial call to this function.
 		include_empty_dirs (bool): If True, the tree will include empty
 			directories.
 		name_filter (function): the function that decides to include files in the
@@ -145,7 +147,7 @@ def _make_parser():
 		help="This flag excludes empty directories from the file tree.")
 
 	parser.add_argument("-o", "--output", type=Path, default=None,
-		help="Path to the .txt file that will contain the tree structure.")
+		help="Path to the text file that will contain the tree structure.")
 
 	return parser
 
