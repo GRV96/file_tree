@@ -115,7 +115,7 @@ def _explore_dir_tree_rec(
 			dir, file_recs, include_empty_dirs, name_filter, depth)
 		nb_files_included += inclusions
 
-	if include_empty_dirs or nb_files_included < 1:
+	if not include_empty_dirs and nb_files_included < 1:
 		file_recs.pop()
 
 	return nb_files_included
