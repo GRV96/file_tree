@@ -50,12 +50,13 @@ def explore_dir_tree(dir_path, name_contains=None):
 	"""
 	This function visits all ramifications of a directory tree structure and
 	represents it with a list of FileRecord objects. If argument name_contains
-	is provided, only files whose name includes it will be considered.
+	is provided, the directory tree will include only files whose name contains
+	the argument.
 
 	Args:
 		dir_path (pathlib.Path): the path to the root directory
-		name_contains (str): ignored if None or an empty string. Defaults to
-			None.
+		name_contains (str): filters the files if it is not None or an empty
+			string. Defaults to None.
 
 	Returns:
 		list: FileRecord objects that make a representation of the directory
@@ -79,7 +80,7 @@ def _explore_dir_tree_rec(dir_path, file_recs, name_filter, depth):
 	file is included in the tree if and only if name_filter returns True.
 
 	Args:
-		dir_path (pathlib.Path): the path to the root directory
+		dir_path (pathlib.Path): the path to a directory
 		file_recs (list): The FileRecord objects generated throughout the
 			exploration are appended to this list.
 		name_filter (function): the function that decides to include files in the
@@ -93,6 +94,7 @@ def _explore_dir_tree_rec(dir_path, file_recs, name_filter, depth):
 	dir_content = list(dir_path.glob(_ASTERISK))
 	dir_content.sort()
 	dirs = list()
+	nb_files_included = 0
 
 	for file in dir_content:
 		if file.is_dir():
@@ -100,9 +102,16 @@ def _explore_dir_tree_rec(dir_path, file_recs, name_filter, depth):
 
 		elif name_filter(file.name):
 			file_recs.append(FileRecord(file, depth))
+			nb_files_included += 1
 
 	for dir in dirs:
-		_explore_dir_tree_rec(dir, file_recs, name_filter, depth)
+		inclusions = _explore_dir_tree_rec(dir, file_recs, name_filter, depth)
+		nb_files_included += inclusions
+
+	if nb_files_included < 1:
+		file_recs.pop()
+
+	return nb_files_included
 
 
 def _file_record_to_str(file_record):
