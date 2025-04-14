@@ -102,7 +102,6 @@ def _explore_dir_tree_rec(
 	dir_content = list(dir_path.glob(_ASTERISK))
 	dir_content.sort()
 	dirs = list()
-	nb_files_included = 0
 
 	for file in dir_content:
 		if file.is_dir():
@@ -110,17 +109,13 @@ def _explore_dir_tree_rec(
 
 		elif name_filter(file.name):
 			file_recs.append(FileRecord(file, depth))
-			nb_files_included += 1
 
 	for dir in dirs:
 		inclusions = _explore_dir_tree_rec(
 			dir, file_recs, exclude_empty_dirs, name_filter, depth)
-		nb_files_included += inclusions
 
-	if exclude_empty_dirs and nb_files_included < 1:
+	if exclude_empty_dirs:
 		file_recs.pop()
-
-	return nb_files_included
 
 
 def _file_record_to_str(file_record):
