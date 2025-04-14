@@ -69,14 +69,12 @@ def explore_dir_tree(dir_path, exclude_empty_dirs, name_contains=None):
 	else:
 		name_filter = lambda name: name_contains in name
 
-	file_records = list()
-	_explore_dir_tree_rec(
-		dir_path, file_records, exclude_empty_dirs, name_filter, 0)
-	return file_records
+	yield from _explore_dir_tree_rec(
+		dir_path, exclude_empty_dirs, name_filter, 0)
 
 
 def _explore_dir_tree_rec(
-		dir_path, file_recs, exclude_empty_dirs, name_filter, depth):
+		dir_path, exclude_empty_dirs, name_filter, depth):
 	"""
 	This function called by explore_dir_tree recursively visits directories to
 	represent their tree structure with a list of FileRecord objects. Argument
@@ -86,9 +84,6 @@ def _explore_dir_tree_rec(
 
 	Args:
 		dir_path (pathlib.Path): the path to a directory
-		file_recs (list): The FileRecord objects generated throughout the
-			exploration are appended to this list. It should be empty on the
-			initial call to this function.
 		exclude_empty_dirs (bool): If True, the tree will exclude empty
 			directories.
 		name_filter (function): the function that decides to include files in the
@@ -96,26 +91,21 @@ def _explore_dir_tree_rec(
 		depth (int): the depth of dir_path in the directory tree. It should be
 			set to 0 on the initial call to this function.
 	"""
-	file_recs.append(FileRecord(dir_path, depth))
+	yield FileRecord(dir_path, depth)
 	depth += 1
+	directories = list()
 
-	dir_content = list(dir_path.glob(_ASTERISK))
-	dir_content.sort()
-	dirs = list()
+	for item in dir_path.glob(_ASTERISK):
+		if item.is_dir():
+			directories.append(item)
 
-	for file in dir_content:
-		if file.is_dir():
-			dirs.append(file)
+		# The item is a file.
+		elif name_filter(item.name):
+			yield FileRecord(item, depth)
 
-		elif name_filter(file.name):
-			file_recs.append(FileRecord(file, depth))
-
-	for dir in dirs:
-		inclusions = _explore_dir_tree_rec(
-			dir, file_recs, exclude_empty_dirs, name_filter, depth)
-
-	if exclude_empty_dirs:
-		file_recs.pop()
+	for directory in directories:
+		yield from _explore_dir_tree_rec(
+			directory, exclude_empty_dirs, name_filter, depth)
 
 
 def _file_record_to_str(file_record):
@@ -162,10 +152,11 @@ if __name__ == "__main__":
 
 	output_path = args.output
 
-	file_records = explore_dir_tree(dir_path, exclude_empty_dirs, contains)
+	file_record_gen = explore_dir_tree(dir_path, exclude_empty_dirs, contains)
+	next(file_record_gen) # Skip the root directory's name.
 
 	with output_path.open(mode="w", encoding="utf-8") as output_stream:
 		output_stream.write(str(dir_path) + _NEW_LINE)
 
-		for file_record in file_records[1:]:
+		for file_record in file_record_gen:
 			output_stream.write(_file_record_to_str(file_record))
