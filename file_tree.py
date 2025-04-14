@@ -1,5 +1,5 @@
 """
-Writes a directory's file structure in a text file.
+This script writes a directory tree structure in a text file.
 """
 
 
@@ -16,7 +16,7 @@ _TAB = "\t"
 
 class FileRecord:
 	"""
-	This class represents a file found in a directory tree structure.
+	This class represents a file in a directory tree structure.
 	"""
 
 	def __init__(self, path, depth):
@@ -48,19 +48,21 @@ class FileRecord:
 
 def explore_dir_tree(dir_path, name_contains=None):
 	"""
-	This function visits all ramifications of a directory tree structure and
-	represents it with a list of FileRecord objects. If argument name_contains
-	is provided, the directory tree will include only files whose name contains
-	this argument.
+	This generator visits all ramifications of a directory tree structure and
+	represents it with FileRecord instances. These objects can be used to
+	represent the tree in a text file.
+
+	If argument name_contains is provided, the directory tree will include only
+	files whose name contains this argument.
 
 	Args:
 		dir_path (pathlib.Path): the path to the root directory.
-		name_contains (str): filters the files if it is not None or an empty
-			string. Defaults to None.
+		name_contains (str): enables filtering the files if it is not None or
+			an empty string. Defaults to None.
 
-	Returns:
-		list: FileRecord objects that make a representation of the directory
-			tree structure
+	Yields:
+		FileRecord: an object representing a file in a directory tree
+			structure.
 	"""
 	if name_contains is None or name_contains == _EMPTY_STR:
 		name_filter = lambda name: True
@@ -73,18 +75,23 @@ def explore_dir_tree(dir_path, name_contains=None):
 def _explore_dir_tree_rec(
 		dir_path, name_filter, depth):
 	"""
-	This function called by explore_dir_tree recursively visits directories to
-	represent their tree structure with a list of FileRecord objects. Argument
-	name_filter is a function that takes each file's name as an argument and
-	returns a Boolean. A file is included in the tree if and only if
-	name_filter returns True.
+	This generator called by explore_dir_tree recursively visits directories to
+	represent their tree structure with FileRecord objects.
+
+	Argument name_filter is a function that takes each file's name as an
+	argument and returns a Boolean. A file is included in the tree if and only
+	if name_filter returns True.
 
 	Args:
 		dir_path (pathlib.Path): the path to a directory.
-		name_filter (function): the function that decides to include files in the
-			tree depending on their name.
+		name_filter (function): the function that decides to include files in
+			the tree depending on their name.
 		depth (int): the depth of dir_path in the directory tree. It should be
-			set to 0 on the initial call to this function.
+			set to 0 when this generator is first called.
+
+	Yields:
+		FileRecord: an object representing a file in a directory tree
+			structure.
 	"""
 	yield FileRecord(dir_path, depth)
 	depth += 1
@@ -121,7 +128,7 @@ def _make_parser():
 
 	parser.add_argument("-d", "--directory",
 		type=Path, default=None, required=True,
-		help="Path to the directory to explore")
+		help="Path to the directory tree structure's root.")
 
 	parser.add_argument("-o", "--output",
 		type=Path, default=None, required=True,
@@ -132,12 +139,8 @@ def _make_parser():
 
 if __name__ == "__main__":
 	args = _make_parser().parse_args()
-
 	contains = args.contains
-
-	dir_path = args.directory
-	dir_path = dir_path.resolve() # Conversion to an absolute path
-
+	dir_path = args.directory.resolve()
 	output_path = args.output
 
 	file_record_gen = explore_dir_tree(dir_path, contains)
