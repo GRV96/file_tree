@@ -25,8 +25,8 @@ class FileRecord:
 		structure. The root's depth is 0.
 
 		Args:
-			path (pathlib.Path): the file's path
-			depth (int): the file's depth in the directory tree structure
+			path (pathlib.Path): the file's path.
+			depth (int): the file's depth in the directory tree structure.
 		"""
 		self._path = path
 		self._depth = depth
@@ -34,14 +34,14 @@ class FileRecord:
 	@property
 	def depth(self):
 		"""
-		int: this file's depth in the directory tree structure
+		int: this file's depth in the directory tree structure.
 		"""
 		return self._depth
 
 	@property
 	def path(self):
 		"""
-		pathlib.Path: this file's path
+		pathlib.Path: this file's path.
 		"""
 		return self._path
 
