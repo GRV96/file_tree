@@ -1,5 +1,5 @@
 """
-This script represents a directory tree in a text file.
+This script writes a directory tree's representation in a text file.
 """
 
 
@@ -49,11 +49,11 @@ class FileRecord:
 def explore_dir_tree(dir_path, name_contains=None):
 	"""
 	This generator visits all ramifications of a directory tree and represents
-	it with FileRecord instances. These objects can be used to represent the
-	tree in a text file.
+	it with FileRecord instances. These objects can be used to write the tree's
+	representation in a text file.
 
-	If argument name_contains is provided, the directory tree's representation
-	will include only files whose name contains this argument.
+	If argument name_contains is provided, this generator produces FileRecord
+	instances only for the files whose name contains the argument.
 
 	Args:
 		dir_path (pathlib.Path): the path to the root directory.
@@ -78,8 +78,8 @@ def _explore_dir_tree_rec(
 	represent their tree structure with FileRecord objects.
 
 	Argument name_filter is a function that takes a file's name as an argument
-	and returns a Boolean. A file is included in the directory tree's
-	representation if and only if name_filter returns True.
+	and returns a Boolean. This generator produces a FileRecord instance for a
+	given file if and only if name_filter returns True.
 
 	Args:
 		dir_path (pathlib.Path): the path to a directory.
