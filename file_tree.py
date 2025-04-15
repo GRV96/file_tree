@@ -78,9 +78,9 @@ def _explore_dir_tree_rec(
 	This generator called by explore_dir_tree recursively visits directories to
 	represent their tree structure with FileRecord objects.
 
-	Argument name_filter is a function that takes each file's name as an
-	argument and returns a Boolean. A file is included in the tree if and only
-	if name_filter returns True.
+	Argument name_filter is a function that takes a file's name as an argument
+	and returns a Boolean. A file is included in the tree if and only if
+	name_filter returns True.
 
 	Args:
 		dir_path (pathlib.Path): the path to a directory.
