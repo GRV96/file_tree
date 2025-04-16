@@ -112,7 +112,7 @@ def _dir_tree_item_to_str(dir_tree_item):
 	if dir_tree_item.path.is_dir():
 		item_str += _DIR_MARK
 
-	item_str += dir_tree_item.path.name + _NEW_LINE
+	item_str += dir_tree_item.path.name
 
 	return item_str
 
@@ -147,4 +147,5 @@ if __name__ == "__main__":
 		output_stream.write(str(dir_path) + _NEW_LINE)
 
 		for dir_tree_item in dir_tree_item_gen:
-			output_stream.write(_dir_tree_item_to_str(dir_tree_item))
+			output_stream.write(
+				_dir_tree_item_to_str(dir_tree_item) + _NEW_LINE)
