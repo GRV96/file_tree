@@ -4,7 +4,7 @@
 
 L'application File Tree écrit l'arborescence d'un dossier racine dans un
 fichier texte. Les niveaux d'indentation indiquent quels éléments sont inclus
-dans chaque dossier.
+dans chaque dossier. La marque `[DR]` indique qu'un élément est un dossier.
 
 Il faut lancer File Tree en ligne de commande avec les arguments suivants.
 
@@ -28,6 +28,7 @@ python file_tree.py -h
 
 Application File Tree writes a root directory's tree structure in a text file.
 The indentation levels indicate which items are contained in each directory.
+Mark `[DR]` indicates that an item is a directory.
 
 File Tree must be executed in command line with the following arguments.
 
