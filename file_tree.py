@@ -1,5 +1,5 @@
 """
-Writes a directory's file structure in a text file.
+This script writes a directory tree's representation in a text file.
 """
 
 
@@ -16,17 +16,17 @@ _TAB = "\t"
 
 class FileRecord:
 	"""
-	This class represents a file found in a directory tree structure.
+	This class represents a file in a directory tree.
 	"""
 
 	def __init__(self, path, depth):
 		"""
-		The constructor needs the file's path and its depth in the tree
-		structure. The root's depth is 0.
+		The constructor needs the file's path and its depth in the directory
+		tree. The root's depth is 0.
 
 		Args:
-			path (pathlib.Path): the file's path
-			depth (int): the file's depth in the directory tree structure
+			path (pathlib.Path): the file's path.
+			depth (int): the file's depth in the directory tree.
 		"""
 		self._path = path
 		self._depth = depth
@@ -34,93 +34,77 @@ class FileRecord:
 	@property
 	def depth(self):
 		"""
-		int: this file's depth in the directory tree structure
+		int: this file's depth in the directory tree.
 		"""
 		return self._depth
 
 	@property
 	def path(self):
 		"""
-		pathlib.Path: this file's path
+		pathlib.Path: this file's path.
 		"""
 		return self._path
 
 
-def explore_dir_tree(dir_path, exclude_empty_dirs, name_contains=None):
+def explore_dir_tree(dir_path, name_contains=None):
 	"""
-	This function visits all ramifications of a directory tree structure and
-	represents it with a list of FileRecord objects. If argument name_contains
-	is provided, the directory tree will include only files whose name contains
-	this argument.
+	This generator visits all ramifications of a directory tree and represents
+	it with FileRecord instances. These objects can be used to write the tree's
+	representation in a text file.
+
+	If argument name_contains is provided, this generator produces FileRecord
+	instances only for the files whose name contains the argument.
 
 	Args:
-		dir_path (pathlib.Path): the path to the root directory
-		exclude_empty_dirs (bool): If True, the tree will exclude empty
-			directories.
-		name_contains (str): filters the files if it is not None or an empty
-			string. Defaults to None.
+		dir_path (pathlib.Path): the path to the root directory.
+		name_contains (str): enables filtering the files if it is not None or
+			an empty string. Defaults to None.
 
-	Returns:
-		list: FileRecord objects that make a representation of the directory
-			tree structure
+	Yields:
+		FileRecord: an object representing a file in a directory tree.
 	"""
 	if name_contains is None or name_contains == _EMPTY_STR:
 		name_filter = lambda name: True
 	else:
 		name_filter = lambda name: name_contains in name
 
-	file_records = list()
-	_explore_dir_tree_rec(
-		dir_path, file_records, exclude_empty_dirs, name_filter, 0)
-	return file_records
+	yield from _explore_dir_tree_rec(dir_path, name_filter, 0)
 
 
 def _explore_dir_tree_rec(
-		dir_path, file_recs, exclude_empty_dirs, name_filter, depth):
+		dir_path, name_filter, depth):
 	"""
-	This function called by explore_dir_tree recursively visits directories to
-	represent their tree structure with a list of FileRecord objects. Argument
-	name_filter is a function that takes each file's name as an argument and
-	returns a Boolean. A file is included in the tree if and only if
-	name_filter returns True.
+	This generator called by explore_dir_tree recursively visits directories to
+	represent their tree structure with FileRecord objects.
+
+	Argument name_filter is a function that takes a file's name as an argument
+	and returns a Boolean. This generator produces a FileRecord instance for a
+	given file if and only if name_filter returns True.
 
 	Args:
-		dir_path (pathlib.Path): the path to a directory
-		file_recs (list): The FileRecord objects generated throughout the
-			exploration are appended to this list. It should be empty on the
-			initial call to this function.
-		exclude_empty_dirs (bool): If True, the tree will exclude empty
-			directories.
-		name_filter (function): the function that decides to include files in the
-			tree depending on their name
+		dir_path (pathlib.Path): the path to a directory.
+		name_filter (function): the function that decides to include files in
+			the tree depending on their name.
 		depth (int): the depth of dir_path in the directory tree. It should be
-			set to 0 on the initial call to this function.
+			set to 0 when this generator is first called.
+
+	Yields:
+		FileRecord: an object representing a file in a directory tree.
 	"""
-	file_recs.append(FileRecord(dir_path, depth))
+	yield FileRecord(dir_path, depth)
 	depth += 1
+	directories = list()
 
-	dir_content = list(dir_path.glob(_ASTERISK))
-	dir_content.sort()
-	dirs = list()
-	nb_files_included = 0
+	for item in dir_path.glob(_ASTERISK):
+		if item.is_dir():
+			directories.append(item)
 
-	for file in dir_content:
-		if file.is_dir():
-			dirs.append(file)
+		# The item is a file.
+		elif name_filter(item.name):
+			yield FileRecord(item, depth)
 
-		elif name_filter(file.name):
-			file_recs.append(FileRecord(file, depth))
-			nb_files_included += 1
-
-	for dir in dirs:
-		inclusions = _explore_dir_tree_rec(
-			dir, file_recs, exclude_empty_dirs, name_filter, depth)
-		nb_files_included += inclusions
-
-	if exclude_empty_dirs and nb_files_included < 1:
-		file_recs.pop()
-
-	return nb_files_included
+	for directory in directories:
+		yield from _explore_dir_tree_rec(directory, name_filter, depth)
 
 
 def _file_record_to_str(file_record):
@@ -142,35 +126,26 @@ def _make_parser():
 
 	parser.add_argument("-d", "--directory",
 		type=Path, default=None, required=True,
-		help="Path to the directory to explore")
-
-	parser.add_argument("-e", "--exclude-empty", action="store_true",
-		help="This flag excludes empty directories from the file tree.")
+		help="Path to the directory tree structure's root.")
 
 	parser.add_argument("-o", "--output",
 		type=Path, default=None, required=True,
-		help="Path to the text file that will contain the tree structure.")
+		help="Path to the text file that will represent the directory tree.")
 
 	return parser
 
 
 if __name__ == "__main__":
-	parser = _make_parser()
-	args = parser.parse_args()
-
+	args = _make_parser().parse_args()
 	contains = args.contains
-
-	dir_path = args.directory
-	dir_path = dir_path.resolve() # Conversion to an absolute path
-
-	exclude_empty_dirs = args.exclude_empty
-
+	dir_path = args.directory.resolve()
 	output_path = args.output
 
-	file_records = explore_dir_tree(dir_path, exclude_empty_dirs, contains)
+	file_record_gen = explore_dir_tree(dir_path, contains)
+	next(file_record_gen) # Skip the root directory's name.
 
 	with output_path.open(mode="w", encoding="utf-8") as output_stream:
 		output_stream.write(str(dir_path) + _NEW_LINE)
 
-		for file_record in file_records[1:]:
+		for file_record in file_record_gen:
 			output_stream.write(_file_record_to_str(file_record))
