@@ -14,19 +14,19 @@ _NEW_LINE = "\n"
 _TAB = "\t"
 
 
-class FileRecord:
+class DirTreeItem:
 	"""
-	This class represents a file in a directory tree.
+	A directory tree item is a directory or a file.
 	"""
 
 	def __init__(self, path, depth):
 		"""
-		The constructor needs the file's path and its depth in the directory
-		tree. The root's depth is 0.
+		The constructor needs the item's path and its depth in the directory
+		tree. The root's depth should be 0.
 
 		Args:
-			path (pathlib.Path): the file's path.
-			depth (int): the file's depth in the directory tree.
+			path (pathlib.Path): the item's path.
+			depth (int): the item's depth in the directory tree.
 		"""
 		self._path = path
 		self._depth = depth
@@ -34,14 +34,14 @@ class FileRecord:
 	@property
 	def depth(self):
 		"""
-		int: this file's depth in the directory tree.
+		int: this item's depth in the directory tree.
 		"""
 		return self._depth
 
 	@property
 	def path(self):
 		"""
-		pathlib.Path: this file's path.
+		pathlib.Path: this item's path.
 		"""
 		return self._path
 
@@ -49,10 +49,10 @@ class FileRecord:
 def explore_dir_tree(dir_path, name_contains=None):
 	"""
 	This generator visits all ramifications of a directory tree and represents
-	it with FileRecord instances. These objects can be used to write the tree's
-	representation in a text file.
+	it with DirTreeItem instances. These objects can be used to write the
+	tree's representation in a text file.
 
-	If argument name_contains is provided, this generator produces FileRecord
+	If argument name_contains is provided, this generator yields DirTreeItem
 	instances only for the files whose name contains the argument.
 
 	Args:
@@ -61,7 +61,7 @@ def explore_dir_tree(dir_path, name_contains=None):
 			an empty string. Defaults to None.
 
 	Yields:
-		FileRecord: an object representing a file in a directory tree.
+		DirTreeItem: It represents a directory or a file in a directory tree.
 	"""
 	if name_contains is None or name_contains == _EMPTY_STR:
 		name_filter = lambda name: True
@@ -71,14 +71,13 @@ def explore_dir_tree(dir_path, name_contains=None):
 	yield from _explore_dir_tree_rec(dir_path, name_filter, 0)
 
 
-def _explore_dir_tree_rec(
-		dir_path, name_filter, depth):
+def _explore_dir_tree_rec(dir_path, name_filter, depth):
 	"""
 	This generator called by explore_dir_tree recursively visits directories to
-	represent their tree structure with FileRecord objects.
+	represent their tree structure with DirTreeItem objects.
 
 	Argument name_filter is a function that takes a file's name as an argument
-	and returns a Boolean. This generator produces a FileRecord instance for a
+	and returns a Boolean. This generator yields a DirTreeItem instance for a
 	given file if and only if name_filter returns True.
 
 	Args:
@@ -89,9 +88,9 @@ def _explore_dir_tree_rec(
 			set to 0 when this generator is first called.
 
 	Yields:
-		FileRecord: an object representing a file in a directory tree.
+		DirTreeItem: It represents a directory or a file in a directory tree.
 	"""
-	yield FileRecord(dir_path, depth)
+	yield DirTreeItem(dir_path, depth)
 	depth += 1
 	directories = list()
 
@@ -101,7 +100,7 @@ def _explore_dir_tree_rec(
 
 		# The item is a file.
 		elif name_filter(item.name):
-			yield FileRecord(item, depth)
+			yield DirTreeItem(item, depth)
 
 	for directory in directories:
 		yield from _explore_dir_tree_rec(directory, name_filter, depth)
