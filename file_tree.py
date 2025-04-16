@@ -106,15 +106,15 @@ def _explore_dir_tree_rec(dir_path, name_filter, depth):
 		yield from _explore_dir_tree_rec(directory, name_filter, depth)
 
 
-def _file_record_to_str(file_record):
-	file_rec_str = _TAB * file_record.depth
+def _dir_tree_item_to_str(dir_tree_item):
+	item_str = _TAB * dir_tree_item.depth
 
-	if file_record.path.is_dir():
-		file_rec_str += _DIR_MARK
+	if dir_tree_item.path.is_dir():
+		item_str += _DIR_MARK
 
-	file_rec_str += file_record.path.name + _NEW_LINE
+	item_str += dir_tree_item.path.name + _NEW_LINE
 
-	return file_rec_str
+	return item_str
 
 
 def _make_parser():
@@ -140,11 +140,11 @@ if __name__ == "__main__":
 	dir_path = args.directory.resolve()
 	output_path = args.output
 
-	file_record_gen = explore_dir_tree(dir_path, contains)
-	next(file_record_gen) # Skip the root directory's name.
+	dir_tree_item_gen = explore_dir_tree(dir_path, contains)
+	next(dir_tree_item_gen) # Skip the root directory's name.
 
 	with output_path.open(mode="w", encoding="utf-8") as output_stream:
 		output_stream.write(str(dir_path) + _NEW_LINE)
 
-		for file_record in file_record_gen:
-			output_stream.write(_file_record_to_str(file_record))
+		for dir_tree_item in dir_tree_item_gen:
+			output_stream.write(_dir_tree_item_to_str(dir_tree_item))
