@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 _ASTERISK = "*"
-_DIR_MARK = "[DIR] "
+_DIRECTORY_MARK = "[DR] "
 _EMPTY_STR = ""
 _NEW_LINE = "\n"
 _TAB = "\t"
@@ -110,7 +110,7 @@ def _dir_tree_item_to_str(dir_tree_item):
 	item_str = _TAB * dir_tree_item.depth
 
 	if dir_tree_item.path.is_dir():
-		item_str += _DIR_MARK
+		item_str += _DIRECTORY_MARK
 
 	item_str += dir_tree_item.path.name
 
