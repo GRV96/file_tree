@@ -71,8 +71,7 @@ def explore_dir_tree(dir_path, name_contains=None):
 	yield from _explore_dir_tree_rec(dir_path, name_filter, 0)
 
 
-def _explore_dir_tree_rec(
-		dir_path, name_filter, depth):
+def _explore_dir_tree_rec(dir_path, name_filter, depth):
 	"""
 	This generator called by explore_dir_tree recursively visits directories to
 	represent their tree structure with DirTreeItem objects.
