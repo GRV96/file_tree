@@ -53,7 +53,8 @@ def explore_dir_tree(dir_path, name_contains=None):
 	tree's representation in a text file.
 
 	If argument name_contains is provided, this generator yields DirTreeItem
-	instances only for the files whose name contains the argument.
+	instances only for the files whose name contains the argument. The search
+	for name_contains in the files' name is case-insensitive.
 
 	Args:
 		dir_path (pathlib.Path): the path to the root directory.
@@ -66,7 +67,8 @@ def explore_dir_tree(dir_path, name_contains=None):
 	if name_contains is None or name_contains == _EMPTY_STR:
 		name_filter = lambda name: True
 	else:
-		name_filter = lambda name: name_contains in name
+		name_contains_lower = name_contains.lower()
+		name_filter = lambda name: name_contains_lower in name.lower()
 
 	yield from _explore_dir_tree_rec(dir_path, name_filter, 0)
 
