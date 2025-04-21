@@ -46,7 +46,7 @@ class DirTreeItem:
 		return self._path
 
 
-def explore_dir_tree(dir_path, name_contains=None):
+def explore_dir_tree(dir_path, exclude_empty_dirs, name_contains=None):
 	"""
 	This generator visits all ramifications of a directory tree and represents
 	it with DirTreeItem instances. These objects can be used to write the
@@ -58,6 +58,8 @@ def explore_dir_tree(dir_path, name_contains=None):
 
 	Args:
 		dir_path (pathlib.Path): the path to the root directory.
+		exclude_empty_dirs (bool): If True, the tree will exclude empty
+			directories.
 		name_contains (str): enables filtering the files if it is not None or
 			an empty string. Defaults to None.
 
@@ -70,10 +72,11 @@ def explore_dir_tree(dir_path, name_contains=None):
 		name_contains_lower = name_contains.lower()
 		name_filter = lambda name: name_contains_lower in name.lower()
 
-	yield from _explore_dir_tree_rec(dir_path, name_filter, 0)
+	yield from _explore_dir_tree_rec(
+		dir_path, exclude_empty_dirs, name_filter, 0)
 
 
-def _explore_dir_tree_rec(dir_path, name_filter, depth):
+def _explore_dir_tree_rec(dir_path, exclude_empty_dirs, name_filter, depth):
 	"""
 	This generator called by explore_dir_tree recursively visits directories to
 	represent their tree structure with DirTreeItem objects.
@@ -84,6 +87,8 @@ def _explore_dir_tree_rec(dir_path, name_filter, depth):
 
 	Args:
 		dir_path (pathlib.Path): the path to a directory.
+		exclude_empty_dirs (bool): If True, the tree will exclude empty
+			directories.
 		name_filter (function): the function that decides to include files in
 			the tree depending on their name.
 		depth (int): the depth of dir_path in the directory tree. It should be
@@ -105,7 +110,8 @@ def _explore_dir_tree_rec(dir_path, name_filter, depth):
 			yield DirTreeItem(item, depth)
 
 	for directory in directories:
-		yield from _explore_dir_tree_rec(directory, name_filter, depth)
+		yield from _explore_dir_tree_rec(
+			directory, exclude_empty_dirs, name_filter, depth)
 
 
 def _dir_tree_item_to_str(dir_tree_item):
@@ -129,6 +135,9 @@ def _make_parser():
 		type=Path, default=None, required=True,
 		help="Path to the directory tree structure's root.")
 
+	parser.add_argument("-e", "--exclude-empty", action="store_true",
+		help="This flag excludes empty directories from the file tree.")
+
 	parser.add_argument("-o", "--output",
 		type=Path, default=None, required=True,
 		help="Path to the text file that will represent the directory tree.")
@@ -139,10 +148,12 @@ def _make_parser():
 if __name__ == "__main__":
 	args = _make_parser().parse_args()
 	contains = args.contains
+	exclude_empty_dirs = args.exclude_empty
 	dir_path = args.directory.resolve()
 	output_path = args.output
 
-	dir_tree_item_gen = explore_dir_tree(dir_path, contains)
+	dir_tree_item_gen = explore_dir_tree(
+		dir_path, exclude_empty_dirs, contains)
 	next(dir_tree_item_gen) # Skip the root directory's name.
 
 	with output_path.open(mode="w", encoding="utf-8") as output_stream:
