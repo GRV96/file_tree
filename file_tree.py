@@ -127,6 +127,7 @@ def _explore_dir_tree_rec(
 		# The item is a file.
 		elif name_filter(item.name):
 			dir_tree_items.append(DirTreeItem(item, depth))
+			nb_files_included += 1
 
 	for directory in directories:
 		nb_files_sub_dir = _explore_dir_tree_rec(
