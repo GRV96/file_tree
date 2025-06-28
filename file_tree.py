@@ -57,6 +57,10 @@ def explore_dir_tree(
 	it with a list of DirTreeItem instances. These objects can be used to write
 	the tree's representation in a text file.
 
+	Empty directories can be excluded from the tree representation. A directory
+	is considered empty if it contains nothing or if it contains only
+	subdirectories that do not contain files.
+
 	If argument name_contains is provided, this function will consider only the
 	files whose name contains the argument. The search for name_contains in the
 	files' name is case-insensitive.
