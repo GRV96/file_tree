@@ -1,6 +1,6 @@
 # Files produced by the command examples in README
-essai.txt
-trial.txt
+essai*.txt
+trial*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
