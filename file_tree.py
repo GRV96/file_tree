@@ -109,7 +109,7 @@ def _explore_dir_tree_rec(
 			depending on their name.
 		depth: the depth of dir_path in the directory tree. It should be set to
 			0 when this function is first called.
-	
+
 	Returns:
 		int: the number of files from dir_path and its subdirectories that this
 			function included in the directory tree.
