@@ -35,14 +35,14 @@ class DirTreeItem:
 	@property
 	def depth(self) -> int:
 		"""
-		int: this item's depth in the directory tree.
+		This item's depth in the directory tree.
 		"""
 		return self._depth
 
 	@property
 	def path(self) -> Path:
 		"""
-		pathlib.Path: this item's path.
+		This item's path.
 		"""
 		return self._path
 
