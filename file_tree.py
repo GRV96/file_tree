@@ -185,5 +185,5 @@ if __name__ == "__main__":
 		output_stream.write(str(dir_path) + _NEW_LINE)
 
 		for dir_tree_item in dir_tree_items[1:]:
-			output_stream.write(
-				_dir_tree_item_to_str(dir_tree_item) + _NEW_LINE)
+			item_as_str = _dir_tree_item_to_str(dir_tree_item) + _NEW_LINE
+			output_stream.write(item_as_str)
