@@ -21,7 +21,7 @@ class DirTreeItem:
 	A directory tree item is a directory or a file.
 	"""
 
-	def __init__(self, path: Path, depth: int):
+	def __init__(self, path: Path, depth: int) -> None:
 		"""
 		The constructor needs the item's path and its depth in the directory
 		tree. The root's depth should be 0.
