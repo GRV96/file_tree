@@ -67,7 +67,7 @@ def explore_dir_tree(
 	files' name is case-insensitive.
 
 	Args:
-		dir_path: the path to the root directory.
+		dir_path: the path to a directory.
 		exclude_empty_dirs: If True, the tree will exclude empty directories.
 		name_contains: enables filtering the files if it is not None nor an
 			empty string. Defaults to None.
