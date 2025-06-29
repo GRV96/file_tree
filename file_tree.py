@@ -74,7 +74,17 @@ def explore_dir_tree(
 	Returns:
 		list: DirTreeItem instances representing directories and files in a
 			directory tree.
+
+	Raises:
+		FileNotFoundError: if dir_path does not exist.
+		NotADirectoryError: if dir_path exists, but is not a directory.
 	"""
+	if not dir_path.exists():
+		raise FileNotFoundError(f"{dir_path} does not exist.")
+
+	if not dir_path.is_dir():
+		raise NotADirectoryError(f"{dir_path} is not a directory.")
+
 	if name_contains is None or name_contains == _EMPTY_STR:
 		name_filter = lambda name: True
 	else:
