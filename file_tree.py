@@ -6,6 +6,7 @@ This script writes a directory tree's representation in a text file.
 from argparse import ArgumentParser
 from pathlib import Path
 from types import FunctionType
+from sys import exit
 
 
 _ASTERISK: str = "*"
@@ -20,7 +21,7 @@ class DirTreeItem:
 	A directory tree item is a directory or a file.
 	"""
 
-	def __init__(self, path: Path, depth: int):
+	def __init__(self, path: Path, depth: int) -> None:
 		"""
 		The constructor needs the item's path and its depth in the directory
 		tree. The root's depth should be 0.
@@ -66,7 +67,7 @@ def explore_dir_tree(
 	files' name is case-insensitive.
 
 	Args:
-		dir_path: the path to the root directory.
+		dir_path: the path to a directory.
 		exclude_empty_dirs: If True, the tree will exclude empty directories.
 		name_contains: enables filtering the files if it is not None nor an
 			empty string. Defaults to None.
@@ -74,7 +75,17 @@ def explore_dir_tree(
 	Returns:
 		list: DirTreeItem instances representing directories and files in a
 			directory tree.
+
+	Raises:
+		FileNotFoundError: if dir_path does not exist.
+		NotADirectoryError: if dir_path exists, but is not a directory.
 	"""
+	if not dir_path.exists():
+		raise FileNotFoundError(f"{dir_path} does not exist.")
+
+	if not dir_path.is_dir():
+		raise NotADirectoryError(f"{dir_path} is not a directory.")
+
 	if name_contains is None or name_contains == _EMPTY_STR:
 		name_filter = lambda name: True
 	else:
@@ -175,7 +186,11 @@ if __name__ == "__main__":
 	dir_path = args.directory.resolve()
 	output_path = args.output
 
-	dir_tree_items = explore_dir_tree(dir_path, exclude_empty_dirs, contains)
+	try:
+		dir_tree_items = explore_dir_tree(dir_path, exclude_empty_dirs, contains)
+	except (FileNotFoundError, NotADirectoryError) as error:
+		print(f"{error.__class__.__name__}: {error}")
+		exit(1)
 
 	with output_path.open(mode="w", encoding="utf-8") as output_stream:
 		output_stream.write(str(dir_path) + _NEW_LINE)
