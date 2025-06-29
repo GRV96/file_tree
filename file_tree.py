@@ -6,6 +6,7 @@ This script writes a directory tree's representation in a text file.
 from argparse import ArgumentParser
 from pathlib import Path
 from types import FunctionType
+from sys import exit
 
 
 _ASTERISK: str = "*"
@@ -185,7 +186,11 @@ if __name__ == "__main__":
 	dir_path = args.directory.resolve()
 	output_path = args.output
 
-	dir_tree_items = explore_dir_tree(dir_path, exclude_empty_dirs, contains)
+	try:
+		dir_tree_items = explore_dir_tree(dir_path, exclude_empty_dirs, contains)
+	except (FileNotFoundError, NotADirectoryError) as error:
+		print(f"{error.__class__.__name__}: {error}")
+		exit(1)
 
 	with output_path.open(mode="w", encoding="utf-8") as output_stream:
 		output_stream.write(str(dir_path) + _NEW_LINE)
