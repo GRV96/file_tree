@@ -6,11 +6,26 @@ This script writes a directory tree's representation in a text file.
 from sys import exit
 
 from src import\
+	DirTreeItem,\
 	explore_dir_tree,\
 	make_arg_parser
 
 
+_DIRECTORY_MARK: str = "[DR] "
+_TAB: str = "\t"
 _NEW_LINE: str = "\n"
+
+
+def _dir_tree_item_to_str(dir_tree_item: DirTreeItem) -> str:
+	item_path = dir_tree_item.path
+	item_str = _TAB * dir_tree_item.depth
+
+	if item_path.is_dir():
+		item_str += _DIRECTORY_MARK
+
+	item_str += item_path.name
+
+	return item_str
 
 
 if __name__ == "__main__":
@@ -30,5 +45,5 @@ if __name__ == "__main__":
 		output_stream.write(str(dir_path) + _NEW_LINE)
 
 		for dir_tree_item in dir_tree_items[1:]:
-			item_as_str = str(dir_tree_item) + _NEW_LINE
+			item_as_str = _dir_tree_item_to_str(dir_tree_item) + _NEW_LINE
 			output_stream.write(item_as_str)
