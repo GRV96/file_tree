@@ -23,7 +23,7 @@ class DirTreeItem:
 
 	def __init__(self, path: Path, depth: int) -> None:
 		"""
-		The constructor needs the item's path and its depth in the directory
+		The initializer needs the item's path and its depth in the directory
 		tree. The root's depth should be 0.
 
 		Args:
