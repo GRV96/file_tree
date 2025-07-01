@@ -3,184 +3,33 @@ This script writes a directory tree's representation in a text file.
 """
 
 
-from argparse import ArgumentParser
-from pathlib import Path
-from types import FunctionType
 from sys import exit
 
+from src import\
+	DirTreeItem,\
+	explore_dir_tree,\
+	make_arg_parser
 
-_ASTERISK: str = "*"
+
 _DIRECTORY_MARK: str = "[DR] "
-_EMPTY_STR: str = ""
-_NEW_LINE: str = "\n"
 _TAB: str = "\t"
-
-
-class DirTreeItem:
-	"""
-	A directory tree item is a directory or a file.
-	"""
-
-	def __init__(self, path: Path, depth: int) -> None:
-		"""
-		The constructor needs the item's path and its depth in the directory
-		tree. The root's depth should be 0.
-
-		Args:
-			path: the item's path.
-			depth: the item's depth in the directory tree.
-		"""
-		self._path = path
-		self._depth = depth
-
-	@property
-	def depth(self) -> int:
-		"""
-		This item's depth in the directory tree.
-		"""
-		return self._depth
-
-	@property
-	def path(self) -> Path:
-		"""
-		This item's path.
-		"""
-		return self._path
-
-
-def explore_dir_tree(
-		dir_path: Path,
-		exclude_empty_dirs: bool,
-		name_contains: str = None
-		) -> list[DirTreeItem]:
-	"""
-	This function visits all ramifications of a directory tree and represents
-	it with a list of DirTreeItem instances. These objects can be used to write
-	the tree's representation in a text file.
-
-	Empty directories can be excluded from the tree representation. A directory
-	is considered empty if it contains nothing or if it contains only
-	subdirectories that do not contain files.
-
-	If argument name_contains is provided, this function will consider only the
-	files whose name contains the argument. The search for name_contains in the
-	files' name is case-insensitive.
-
-	Args:
-		dir_path: the path to a directory.
-		exclude_empty_dirs: If True, the tree will exclude empty directories.
-		name_contains: enables filtering the files if it is not None nor an
-			empty string. Defaults to None.
-
-	Returns:
-		list: DirTreeItem instances representing directories and files in a
-			directory tree.
-
-	Raises:
-		FileNotFoundError: if dir_path does not exist.
-		NotADirectoryError: if dir_path exists, but is not a directory.
-	"""
-	if not dir_path.exists():
-		raise FileNotFoundError(f"{dir_path} does not exist.")
-
-	if not dir_path.is_dir():
-		raise NotADirectoryError(f"{dir_path} is not a directory.")
-
-	if name_contains is None or name_contains == _EMPTY_STR:
-		name_filter = lambda name: True
-	else:
-		name_contains_lower = name_contains.lower()
-		name_filter = lambda name: name_contains_lower in name.lower()
-
-	dir_tree_items = _explore_dir_tree_rec(
-		dir_path, exclude_empty_dirs, name_filter, 0)
-
-	return dir_tree_items
-
-
-def _explore_dir_tree_rec(
-		dir_path: Path,
-		exclude_empty_dirs: bool,
-		name_filter: FunctionType,
-		depth: int
-		) -> list[DirTreeItem]:
-	"""
-	This function called by explore_dir_tree recursively visits directories to
-	represent their tree structure with a list of DirTreeItem objects.
-
-	Argument name_filter is a function that takes a file's name as an argument
-	and returns a Boolean. A file is included in the tree if and only if
-	name_filter returns True.
-
-	Args:
-		dir_path: the path to a directory.
-		exclude_empty_dirs: If True, the tree will exclude empty directories.
-		name_filter: the function that decides to include files in the tree
-			depending on their name.
-		depth: the depth of dir_path in the directory tree. It should be set to
-			0 when this function is first called.
-
-	Returns:
-		list: DirTreeItem objects representing dir_path's tree structure.
-	"""
-	dir_tree_items: list[DirTreeItem] = list()
-	directories: list[Path] = list()
-
-	depth += 1
-
-	for item in dir_path.glob(_ASTERISK):
-		if item.is_dir():
-			directories.append(item)
-
-		# The item is a file.
-		elif name_filter(item.name):
-			dir_tree_items.append(DirTreeItem(item, depth))
-
-	for directory in directories:
-		sub_dir_tree_items = _explore_dir_tree_rec(
-			directory, exclude_empty_dirs, name_filter, depth)
-		dir_tree_items.extend(sub_dir_tree_items)
-
-	if not exclude_empty_dirs or len(dir_tree_items) > 0:
-		dir_tree_items.insert(0, DirTreeItem(dir_path, depth-1))
-
-	return dir_tree_items
+_NEW_LINE: str = "\n"
 
 
 def _dir_tree_item_to_str(dir_tree_item: DirTreeItem) -> str:
+	item_path = dir_tree_item.path
 	item_str = _TAB * dir_tree_item.depth
 
-	if dir_tree_item.path.is_dir():
+	if item_path.is_dir():
 		item_str += _DIRECTORY_MARK
 
-	item_str += dir_tree_item.path.name
+	item_str += item_path.name
 
 	return item_str
 
 
-def _make_parser() -> ArgumentParser:
-	parser = ArgumentParser(description=__doc__)
-
-	parser.add_argument("-c", "--contains",
-		type=str, default=None,
-		help="Only include files whose name contains this argument.")
-
-	parser.add_argument("-d", "--directory",
-		type=Path, default=None, required=True,
-		help="Path to the directory tree structure's root.")
-
-	parser.add_argument("-e", "--exclude-empty", action="store_true",
-		help="This flag excludes empty directories from the directory tree.")
-
-	parser.add_argument("-o", "--output",
-		type=Path, default=None, required=True,
-		help="Path to the text file that will represent the directory tree.")
-
-	return parser
-
-
 if __name__ == "__main__":
-	args = _make_parser().parse_args()
+	args = make_arg_parser().parse_args()
 	contains = args.contains
 	exclude_empty_dirs = args.exclude_empty
 	dir_path = args.directory.resolve()
