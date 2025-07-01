@@ -33,6 +33,26 @@ class DirTreeItem:
 		self._path = path
 		self._depth = depth
 
+	def __str__(self) -> str:
+		"""
+		This method creates a string meant to be part of a directory tree
+		representation in a text file. The string will consist of a number of
+		tabulations equivalent to this item's depth in the tree and this item's
+		name. If this item is a directory, mark [DR] will precede its name.
+
+		Returns:
+			str: this directory tree item's string representation.
+		"""
+		item_path = self._path
+		item_str = _TAB * self._depth
+
+		if item_path.is_dir():
+			item_str += _DIRECTORY_MARK
+
+		item_str += item_path.name
+
+		return item_str
+
 	@property
 	def depth(self) -> int:
 		"""
@@ -147,17 +167,6 @@ def _explore_dir_tree_rec(
 	return dir_tree_items
 
 
-def _dir_tree_item_to_str(dir_tree_item: DirTreeItem) -> str:
-	item_str = _TAB * dir_tree_item.depth
-
-	if dir_tree_item.path.is_dir():
-		item_str += _DIRECTORY_MARK
-
-	item_str += dir_tree_item.path.name
-
-	return item_str
-
-
 def _make_parser() -> ArgumentParser:
 	parser = ArgumentParser(description=__doc__)
 
@@ -196,5 +205,5 @@ if __name__ == "__main__":
 		output_stream.write(str(dir_path) + _NEW_LINE)
 
 		for dir_tree_item in dir_tree_items[1:]:
-			item_as_str = _dir_tree_item_to_str(dir_tree_item) + _NEW_LINE
+			item_as_str = str(dir_tree_item) + _NEW_LINE
 			output_stream.write(item_as_str)
