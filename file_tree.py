@@ -1,5 +1,5 @@
 """
-This script writes a directory tree's representation in a text file.
+This application writes a directory tree's representation in a text file.
 """
 
 
@@ -29,14 +29,15 @@ def _dir_tree_item_to_str(dir_tree_item: DirTreeItem) -> str:
 
 
 if __name__ == "__main__":
-	args = make_arg_parser().parse_args()
+	args = make_arg_parser(__doc__).parse_args()
 	contains = args.contains
 	exclude_empty_dirs = args.exclude_empty
 	dir_path = args.directory.resolve()
 	output_path = args.output
 
 	try:
-		dir_tree_items = explore_dir_tree(dir_path, exclude_empty_dirs, contains)
+		dir_tree_items = explore_dir_tree(
+			dir_path, exclude_empty_dirs, contains)
 	except (FileNotFoundError, NotADirectoryError) as error:
 		print(f"{error.__class__.__name__}: {error}")
 		exit(1)

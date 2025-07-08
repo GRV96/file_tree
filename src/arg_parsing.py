@@ -2,8 +2,8 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 
-def make_arg_parser() -> ArgumentParser:
-	parser = ArgumentParser(description=__doc__)
+def make_arg_parser(description: str) -> ArgumentParser:
+	parser = ArgumentParser(description=description)
 
 	parser.add_argument("-c", "--contains",
 		type=str, default=None,
