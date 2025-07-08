@@ -36,7 +36,8 @@ if __name__ == "__main__":
 	output_path = args.output
 
 	try:
-		dir_tree_items = explore_dir_tree(dir_path, exclude_empty_dirs, contains)
+		dir_tree_items = explore_dir_tree(
+			dir_path, exclude_empty_dirs, contains)
 	except (FileNotFoundError, NotADirectoryError) as error:
 		print(f"{error.__class__.__name__}: {error}")
 		exit(1)
