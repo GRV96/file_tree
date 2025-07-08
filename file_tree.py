@@ -29,7 +29,7 @@ def _dir_tree_item_to_str(dir_tree_item: DirTreeItem) -> str:
 
 
 if __name__ == "__main__":
-	args = make_arg_parser().parse_args()
+	args = make_arg_parser(__doc__).parse_args()
 	contains = args.contains
 	exclude_empty_dirs = args.exclude_empty
 	dir_path = args.directory.resolve()
