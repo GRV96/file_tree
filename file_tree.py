@@ -1,5 +1,5 @@
 """
-This script writes a directory tree's representation in a text file.
+This application writes a directory tree's representation in a text file.
 """
 
 
