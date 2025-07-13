@@ -20,8 +20,8 @@ La classe `DirTreeItem` représente un élément d'une arborescence de dossiers.
 La fonction `explore_dir_tree` visite toutes les ramifications d'une
 arborescence de dossiers et la représente par des instances de `DirTreeItem`.
 
-La fonction `write_dir_tree` écrit la représentation textuelle d'une
-arborescence de dossiers dans un fichier texte.
+La fonction `write_dir_tree` écrit la représentation d'une arborescence de
+dossiers dans un fichier texte.
 
 ### Application en ligne de commande
 
@@ -54,8 +54,8 @@ python . -d .git -o essai.txt
 ## ENGLISH
 
 Package `dirtree` allows to make a representation of a directory tree and write
-it in a text file. A directory tree contains items of two types: directories
-and files.
+it in a text file. A directory tree contains two item types: directories and
+files.
 
 ### Text representation of a directory tree
 
@@ -70,8 +70,8 @@ Class `DirTreeItem` represents an item in a directory tree.
 Function `explore_dir_tree` visits all ramifications of a directory tree and
 represents it with `DirTreeItem` instances.
 
-Function `write_dir_tree` writes the text representation of a directory tree in
-a text file.
+Function `write_dir_tree` writes the representation of a directory tree in a
+text file.
 
 ### Command line application
 
