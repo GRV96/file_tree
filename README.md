@@ -15,13 +15,13 @@ dossier spécifié par `-d`.
 Exemple:
 
 ```
-python file_tree.py -d .git -o essai.txt
+python dirtree.py -d .git -o essai.txt
 ```
 
 L'argument `-h` affiche l'aide.
 
 ```
-python file_tree.py -h
+python dirtree.py -h
 ```
 
 ## ENGLISH
@@ -39,11 +39,11 @@ the directory specified with `-d`.
 Example:
 
 ```
-python file_tree.py -d .git -o trial.txt
+python dirtree.py -d .git -o trial.txt
 ```
 
 Flag `-h` displays the help.
 
 ```
-python file_tree.py -h
+python dirtree.py -h
 ```
