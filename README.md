@@ -1,8 +1,8 @@
-# DirTree
+# dirtree
 
 ## FRANÇAIS
 
-Le paquet DirTree permet de créer une représentation de l'arborescence d'un
+Le paquet `dirtree` permet de créer une représentation de l'arborescence d'un
 dossier racine et de l'écrire dans un fichier texte. Une arborescence est
 constituée de deux types d'éléments: des dossiers et des fichiers.
 
@@ -25,7 +25,7 @@ arborescence de dossiers dans un fichier texte.
 
 ### Application en ligne de commande
 
-Lorsqu'on exécute le paquet DirTree en ligne de commande, il écrit
+Lorsqu'on exécute le paquet `dirtree` en ligne de commande, il écrit
 l'arborescence d'un dossier racine dans un fichier texte. Les arguments
 suivants sont obligatoires.
 
@@ -45,7 +45,7 @@ Exemple d'exécution:
 python dirtree -d /un/dossier -o essai.txt
 ```
 
-Il est possible d'exécuter DirTree depuis le dépôt local.
+Il est possible d'exécuter `dirtree` depuis le dépôt local.
 
 ```
 python . -d .git -o essai.txt
@@ -53,7 +53,7 @@ python . -d .git -o essai.txt
 
 ## ENGLISH
 
-Package DirTree allows to make a representation of a directory tree and write
+Package `dirtree` allows to make a representation of a directory tree and write
 it in a text file. A directory tree contains items of two types: directories
 and files.
 
@@ -75,8 +75,8 @@ a text file.
 
 ### Command line application
 
-When package DirTree is executed in command line, it writes a root directory's
-tree in a text file. The following arguments are mandatory.
+When package `dirtree` is executed in command line, it writes a root
+directory's tree in a text file. The following arguments are mandatory.
 
 * `-d`/`--directory`: the path to the root directory.
 * `-o`/`--output`: the path to the file meant to represent the tree structure
@@ -94,7 +94,7 @@ Execution example:
 python dirtree -d /a/directory -o trial.txt
 ```
 
-It is possible to execute DirTree from the local repository.
+It is possible to execute `dirtree` from the local repository.
 
 ```
 python . -d .git -o trial.txt
