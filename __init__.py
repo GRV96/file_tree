@@ -1,3 +1,9 @@
+"""
+This package allows to make a representation of a directory tree and write it
+in a text file.
+"""
+
+
 from .src import\
 	DirTreeItem,\
 	explore_dir_tree,\
