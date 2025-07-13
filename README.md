@@ -13,16 +13,22 @@ obligatoires.
 * `-o`/`--output`: le chemin du fichier qui contiendra l'arborescence du
 dossier spécifié par `-d`.
 
-Exemple:
-
-```
-python dirtree.py -d .git -o essai.txt
-```
-
 L'aide affiche la description de tous les arguments.
 
 ```
-python dirtree.py -h
+python dirtree -h
+```
+
+Exemple d'exécution:
+
+```
+python dirtree -d /un/dossier -o essai.txt
+```
+
+Il est possible d'exécuter DirTree depuis le dépôt local.
+
+```
+python . -d .git -o essai.txt
 ```
 
 ## ENGLISH
@@ -38,14 +44,20 @@ mandatory.
 * `-o`/`--output`: the path to the file meant to contain the tree structure of
 the directory specified with `-d`.
 
-Example:
-
-```
-python dirtree.py -d .git -o trial.txt
-```
-
 The help displays the description of all arguments.
 
 ```
-python dirtree.py -h
+python dirtree -h
+```
+
+Execution example:
+
+```
+python dirtree -d /a/directory -o trial.txt
+```
+
+It is possible to execute DirTree from the local repository.
+
+```
+python . -d .git -o trial.txt
 ```
